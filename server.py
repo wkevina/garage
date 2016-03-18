@@ -34,6 +34,7 @@ def rel(path):
 
 static_path = rel('assets')
 template_path = rel('templates')
+conf_path = rel('garage.conf')
 
 settings = dict(
     debug=True,
@@ -56,7 +57,7 @@ routes = [
 ]
 
 def main():
-    tornado.options.parse_config_file('garage.conf', final=False)
+    tornado.options.parse_config_file(conf_path, final=False)
     tornado.options.parse_command_line()
 
     auth.install_admin()
