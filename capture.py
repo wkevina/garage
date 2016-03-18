@@ -21,7 +21,7 @@ def capture():
 def timestamp(img):
     now = datetime.datetime.now()
 
-    stamp.stamp(img, (10, 10), str(now))
+    stamp.stamp(img, (10, 10), str(now), size=20)
 
     return img
 

@@ -47,20 +47,17 @@ settings = dict(
 
 routes = [
     (r"/capture/", capture.CaptureHandler),
-    # (r"/(.*\.(html|js|jsx|css|png|jpg|jpeg))", tornado.web.StaticFileHandler,
-    #  dict(path=static_path)
-    # ),
     ('/', MainHandler),
     ('/login', login.LoginHandler),
     ('/logout', login.LogoutHandler),
-    # ('.*', tornado.web.FallbackHandler)
+
 ]
 
 def main():
     tornado.options.parse_config_file(conf_path, final=False)
     tornado.options.parse_command_line()
 
-    auth.install_admin()
+#    auth.install_admin()
 
     application = tornado.web.Application(
         routes,
