@@ -21,24 +21,30 @@ class BaseHandler(tornado.web.RequestHandler):
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.write('Hey guys!')
+        self.render('base.html')
 
-static_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), 'assets')
+def rel(path):
+    return os.path.abspath(
+    os.path.join(os.path.dirname(__file__), path)
 )
+
+static_path = rel('assets')
+template_path = rel('templates')
 
 settings = dict(
     debug=True,
     autoreload=True,
     cookie_secret=os.urandom(32),
-    login_url='/login'
+    login_url='/login',
+    static_path=static_path,
+    template_path=template_path
 )
 
 routes = [
     (r"/capture/", capture.CaptureHandler),
-    (r"/(.*\.(html|js|jsx|css|png|jpg|jpeg))", tornado.web.StaticFileHandler,
-     dict(path=static_path)
-    ),
+    # (r"/(.*\.(html|js|jsx|css|png|jpg|jpeg))", tornado.web.StaticFileHandler,
+    #  dict(path=static_path)
+    # ),
     ('/', MainHandler),
     ('/login', login.LoginHandler),
     ('/logout', login.LogoutHandler),
