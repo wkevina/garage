@@ -3,7 +3,9 @@ import os
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
+import tornado.options
 
+import capture
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -20,14 +22,17 @@ settings = dict(
 )
 
 routes = [
-     (r"/(.*\.(html|js|jsx|css|png|jpg|jpeg))", tornado.web.StaticFileHandler,
-      dict(path=static_path)
-     ),
+    (r"/capture/", capture.CaptureHandler),
+    (r"/(.*\.(html|js|jsx|css|png|jpg|jpeg))", tornado.web.StaticFileHandler,
+     dict(path=static_path)
+    ),
     ('/', MainHandler),
     # ('.*', tornado.web.FallbackHandler)
 ]
 
-if __name__ == '__main__':
+def main():
+    tornado.options.parse_command_line()
+
     print("Launching server with settings:\n")
     print(settings)
 
@@ -38,4 +43,10 @@ if __name__ == '__main__':
 
     server = tornado.httpserver.HTTPServer(application)
     server.listen(8888)
+
+    tornado.ioloop.IOLoop.current().run_sync(capture.task)
+
     tornado.ioloop.IOLoop.instance().start()
+
+if __name__ == '__main__':
+    main()
