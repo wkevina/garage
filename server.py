@@ -47,6 +47,7 @@ settings = dict(
 
 routes = [
     (r"/capture/", capture.CaptureHandler),
+    (r"/socket", capture.CaptureSocketHandler),
     ('/', MainHandler),
     ('/login', login.LoginHandler),
     ('/logout', login.LogoutHandler),
@@ -67,7 +68,7 @@ def main():
     server = tornado.httpserver.HTTPServer(application)
     server.listen(options.server_port)
 
-    tornado.ioloop.IOLoop.current().run_sync(capture.task)
+    tornado.ioloop.IOLoop.current().spawn_callback(capture.task)
 
     tornado.ioloop.IOLoop.instance().start()
 
