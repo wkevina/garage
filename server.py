@@ -59,9 +59,6 @@ def main():
     tornado.options.parse_config_file('garage.conf', final=False)
     tornado.options.parse_command_line()
 
-    print("Launching server with settings:\n")
-    print(settings)
-
     auth.install_admin()
 
     application = tornado.web.Application(
