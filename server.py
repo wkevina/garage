@@ -4,10 +4,14 @@ import tornado.ioloop
 import tornado.web
 import tornado.httpserver
 import tornado.options
+from tornado.options import define, options
 
 import capture
 import auth
 import login
+
+define('server_port', default=8888, type=int)
+define('server_hostname', default='localhost', type=str)
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -52,12 +56,13 @@ routes = [
 ]
 
 def main():
+    tornado.options.parse_config_file('garage.conf', final=False)
     tornado.options.parse_command_line()
 
     print("Launching server with settings:\n")
     print(settings)
 
-    auth.add_user('root', 'root')
+    auth.install_admin()
 
     application = tornado.web.Application(
         routes,
@@ -65,7 +70,7 @@ def main():
     )
 
     server = tornado.httpserver.HTTPServer(application)
-    server.listen(8888)
+    server.listen(options.server_port)
 
     tornado.ioloop.IOLoop.current().run_sync(capture.task)
 

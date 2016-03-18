@@ -2,7 +2,12 @@ import hashlib
 import uuid
 import os
 
+from tornado.options import define, options
+
 HASH_ROUNDS = 1000
+
+define('admin_username', default=None, type=str)
+define('admin_password', default=None, type=str)
 
 def hash_password(clear_password, salt):
         """Generates a secure hash of password"""
@@ -71,3 +76,7 @@ def authenticate(username, password):
         )
 
     return False
+
+def install_admin():
+    if options.admin_username and options.admin_password:
+        add_user(options.admin_username, options.admin_password)
