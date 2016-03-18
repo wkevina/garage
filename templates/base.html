@@ -4,6 +4,7 @@
     <title>Garage</title>
     <link href="{{ static_url('stupid.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static_url('stack.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ static_url('custom.css') }}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -25,8 +26,8 @@
             </li>
             {% end %}
           </ul>
-
         </div>
+
       </div>
     </header>
     <main class="padded max900">
@@ -34,7 +35,7 @@
       <h3><i class="fa fa-cog"></i> Your Garage</h3>
       <div class="container spaced">
         <div class="twothirds">
-          <img src="/capture/" />
+          <img class="lifted" src="/capture/" />
         </div>
         <div class="third middle center stack">
           <button class="btn green rounded">Door</button>

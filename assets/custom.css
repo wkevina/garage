@@ -1,0 +1,10 @@
+/* link effects */
+a { color: #0080F0 }
+a:not(.btn):not(.noeffect):after { background-color: #0080F0 }
+a:not(.btn):not(.noeffect):hover { color: #0080F0 }
+a:not(.btn):not(.noeffect):hover:after { color: #0080F0 }
+
+a.blue { color: white }
+a.blue:not(.btn):not(.noeffect):after { background-color: white }
+a.blue:not(.btn):not(.noeffect):hover { color: white }
+a.blue:not(.btn):not(.noeffect):hover:after { color: white }
