@@ -68,7 +68,7 @@ def main():
     server = tornado.httpserver.HTTPServer(application)
     server.listen(options.server_port)
 
-    tornado.ioloop.IOLoop.current().run_sync(capture.task)
+    tornado.ioloop.IOLoop.current().spawn_callback(capture.task)
 
     tornado.ioloop.IOLoop.instance().start()
 
