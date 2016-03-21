@@ -4,15 +4,10 @@ import io
 import PIL.Image
 import tornado.gen as gen
 import tornado.web
-import tornado.websocket
-import tornado.locks
-import tornado.concurrent
 
 import stamp
 
 _current_frame = None
-
-condition = tornado.locks.Condition()
 
 @gen.coroutine
 def capture():
@@ -26,7 +21,7 @@ def capture():
 def timestamp(img):
     now = datetime.datetime.now()
 
-    stamp.stamp(img, (10, 10), str(now), size=20)
+    stamp.stamp(img, (10, 10), str(now))
 
     return img
 
@@ -60,16 +55,11 @@ def task():
 
         assert frame is _current_frame
 
-        condition.notify()
+        #cap.save("cap{}.png".format(i))
+
+        i+=1
 
         yield nxt
-
-@gen.coroutine
-def test_condition():
-    while True:
-        print('Waiting on condition')
-        yield condition.wait()
-        print('New frame available!!!')
 
 
 class CaptureHandler(tornado.web.RequestHandler):
@@ -124,27 +114,3 @@ class CaptureHandler(tornado.web.RequestHandler):
                     if remaining is not None:
                         assert remaining == 0
                     return
-
-
-class CaptureSocketHandler(tornado.websocket.WebSocketHandler):
-    @gen.coroutine
-    def open(self):
-        self._start_future = tornado.concurrent.Future()
-        yield self.wait_on_capture()
-
-    def on_message(self, message):
-        self.write_message('You said: ' + message)
-        self._start_future.set_result(None)
-
-    @gen.coroutine
-    def wait_on_capture(self):
-        yield self._start_future
-        while True:
-            yield condition.wait()
-            try:
-                self.write_message('New capture available')
-            except:
-                return
-
-    def on_close(self):
-        print('Websocket closed')
