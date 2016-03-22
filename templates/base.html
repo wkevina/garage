@@ -12,32 +12,38 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
   </head>
   <body>
-    <header class="padded blue">
-      <div class="container max900">
+      <header class="top-bar">
+          <div class="top-bar-title">
+              <strong>Garage Door Controller</strong>
+          </div>
+          <div>
+              <div class="top-bar-left"></div>
+              <nav class="top-bar-right">
+                  {% block login_control %}
+                  <ul class="menu">
+                      <li>
+                          <a href="/logout">
+                              <i class="fa fa-fw fa-power-off"></i> Logout
+                          </a>
+                      </li>
+                  </ul>
+                  {% end %}
+              </nav>
+          </div>
+      </header>
 
-        <div class="fill middle">
-          <span>Garage Door Controller</span>
-          <ul class="menu right">
-            {% block login_control %}
-            <li>
-              <a class="blue" href="/logout">
-                <i class="fa fa-fw fa-power-off"></i> Logout
-              </a>
-            </li>
-            {% end %}
-          </ul>
-        </div>
-
-      </div>
-    </header>
-    <main>
-      {% block content %}
-      <h3><i class="fa fa-cog"></i> Your Garage</h3>
-      <div class="row align-center">
-          <div class="column small-12 medium-8 text-right">
-              <img id="capture" class="lifted" src="/capture/">
-        </div>
-        <div class="column medium-stack inline-flex align-center">
+      <main>
+          {% block content %}
+          <div class="row">
+              <div class="column">
+                  <h3><i class="fa fa-cog"></i> Your Garage</h3>
+              </div>
+          </div>
+          <div class="row align-center">
+              <div class="column small-12 medium-8 text-right">
+                  <img id="capture" class="lifted" src="/capture/">
+              </div>
+              <div class="column medium-stack inline-flex align-center">
             <button class="button round large success hollow">Door</button>
             <button class="button round large warning hollow">Light</button>
         </div>
