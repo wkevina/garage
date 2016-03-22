@@ -60,16 +60,9 @@ def task():
 
         assert frame is _current_frame
 
-        condition.notify()
+        condition.notify_all()
 
         yield nxt
-
-@gen.coroutine
-def test_condition():
-    while True:
-        print('Waiting on condition')
-        yield condition.wait()
-        print('New frame available!!!')
 
 
 class CaptureHandler(tornado.web.RequestHandler):
