@@ -3,23 +3,22 @@
 {% block login_control %} {% end %}
 
 {% block content %}
-<h3>Please login</h3>
-<form action="/login" method="POST">
-    <div class="container spaced">
-        <div class="container">
-            <label class="quarter right">Username</label>
-            <div class="quarter"><input type="text" name="name"></div>
-        </div>
-        <div class="container">
-            <label class="quarter right">Password</label>
-            <div class="quarter"><input type="password" name="password"></div>
-        </div>
-        <div class="container">
-            <div class="quarter"></div>
-            <div class="quarter">
-                <button class="btn rounded blue" type="submit">Log me in</button>
-            </div>
-        </div>
+
+<div class="row align-center">
+    <div class="medium-4 columns">
+        <form action="/login" method="POST">
+
+            <h4 class="text-center">Please log in</h4>
+            <label>Username
+                <input type="text" name="name">
+            </label>
+            <label>Password
+                <input type="text" name="password">
+            </label>
+            <p><button type="submit" class="button expanded">Log In</button></p>
+
+        </form>
     </div>
-</form>
+</div>
+
 {% end %}
