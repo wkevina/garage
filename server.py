@@ -25,6 +25,7 @@ def rel(path):
     os.path.join(os.path.dirname(__file__), path)
 )
 
+
 static_path = rel('assets')
 template_path = rel('templates')
 conf_path = rel('garage.conf')

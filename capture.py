@@ -10,6 +10,7 @@ import tornado.concurrent
 
 import basehandler
 import stamp
+import auth
 
 _current_frame = None
 
@@ -122,18 +123,28 @@ class CaptureHandler(basehandler.BaseHandler):
 
 
 class CaptureSocketHandler(tornado.websocket.WebSocketHandler):
+    def get_current_user(self):
+        user_id = self.get_secure_cookie("garage_user")
+
+        if not user_id:
+            return None
+
+        return auth.get_username(user_id)
+
     @gen.coroutine
     def open(self):
-        self._start_future = tornado.concurrent.Future()
+        # Authenticate user
+        if (self.get_current_user() is None):
+            self.close()
+            return
+
         yield self.wait_on_capture()
 
     def on_message(self, message):
-        self.write_message('You said: ' + message)
-        self._start_future.set_result(None)
+        pass
 
     @gen.coroutine
     def wait_on_capture(self):
-        yield self._start_future
         while True:
             yield condition.wait()
             try:
