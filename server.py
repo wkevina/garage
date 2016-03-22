@@ -6,6 +6,7 @@ import tornado.httpserver
 import tornado.options
 from tornado.options import define, options
 
+import basehandler
 import capture
 import auth
 import login
@@ -13,16 +14,8 @@ import login
 define('server_port', default=8888, type=int)
 define('server_hostname', default='localhost', type=str)
 
-class BaseHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        user_id = self.get_secure_cookie("garage_user")
 
-        if not user_id:
-            return None
-
-        return auth.get_username(user_id)
-
-class MainHandler(BaseHandler):
+class MainHandler(basehandler.BaseHandler):
     @tornado.web.authenticated
     def get(self):
         self.render('base.html')

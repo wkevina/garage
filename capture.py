@@ -8,6 +8,7 @@ import tornado.websocket
 import tornado.locks
 import tornado.concurrent
 
+import basehandler
 import stamp
 
 _current_frame = None
@@ -65,8 +66,9 @@ def task():
         yield nxt
 
 
-class CaptureHandler(tornado.web.RequestHandler):
+class CaptureHandler(basehandler.BaseHandler):
     @gen.coroutine
+    @tornado.web.authenticated
     def get(self):
         self.set_header('Content-Type', 'image/jpeg')
 
@@ -80,7 +82,7 @@ class CaptureHandler(tornado.web.RequestHandler):
                 self.write(chunk)
                 yield self.flush()
             except tornado.iostream.StreamClosedError:
-                    return
+                return
 
     def chunk_content(self, stream):
         remaining = None
