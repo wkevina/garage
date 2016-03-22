@@ -1,4 +1,4 @@
-$(function() {
+window.addEventListener('load', function() {
 
     var imgId = 'capture',
         host = window.location.host,
@@ -12,37 +12,41 @@ $(function() {
     }
 
     function loadImage(url) {
-        var newImg = $('<img>'),
-            promise = newImg.load()
-                .promise()
-                .done(function() {
-                    return newImg;
+        var newImg = new Image(),
+            deferred = new Promise(function (resolve, reject) {
+                newImg.src = url;
+
+                newImg.addEventListener('load', function() {
+                    resolve(newImg);
                 });
 
-        newImg.attr('src', url);
+                newImg.addEventListener('error', function() {
+                    reject(newImg);
+                });
 
-        return promise;
+                newImg.addEventListener('abort', function() {
+                    reject(newImg);
+                });
+            });
+
+        return deferred;
     }
 
-    var ws = new WebSocket(wsProtocol + host + '/socket');
+    var captureImg = document.getElementById(imgId);
 
-    ws.onopen = function() {
-        ws.send("Hey, I'm Firefox.");
-    };
+    if (captureImg !== null) {
+        var ws = new WebSocket(wsProtocol + host + '/socket');
 
-    ws.onmessage = function(evt) {
-        loadImage('/capture/?' + new Date().getTime()).
-            done(function(newImg) {
-                var oldImg = $('#' + imgId);
+        ws.addEventListener('message', function(evt) {
+            loadImage('/capture/?' + new Date().getTime()).
+                then(function(newImg) {
+                    var oldImg = document.getElementById(imgId);
+                    oldImg.src = newImg.src;
+                });
+        });
 
-                oldImg.replaceWith(newImg);
-
-                newImg.attr('id', imgId);
-            });
-    };
-
-    $(window).on("unload", function() {
-        ws.close();
-    });
-
+        window.addEventListener('unload', function() {
+            ws.close();
+        });
+    }
 });
