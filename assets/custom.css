@@ -12,3 +12,19 @@
 img#capture {
   margin: 0 0 1rem 0;
 }
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.round {
+  border-radius: 1rem;
+}
+
+@media screen and (min-width: 40em) {
+  .medium-stack {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
