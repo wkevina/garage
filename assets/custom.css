@@ -9,6 +9,10 @@
 /* a.blue:not(.btn):not(.noeffect):hover { color: white } */
 /* a.blue:not(.btn):not(.noeffect):hover:after { color: white } */
 
+main {
+  margin-top: 1rem;
+}
+
 img#capture {
   margin: 0 0 1rem 0;
 }
