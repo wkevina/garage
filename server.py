@@ -30,7 +30,7 @@ def rel(path):
 static_path = rel('assets')
 template_path = rel('templates')
 conf_path = rel('garage.conf')
-peristent_path = rel('storage.db')
+persistent_path = rel('storage.db')
 
 settings = dict(
     debug=True,
@@ -50,7 +50,7 @@ routes = [
 ]
 
 def main():
-    config.init(peristent_path)
+    config.init(persistent_path)
 
     tornado.options.parse_config_file(conf_path, final=False)
     tornado.options.parse_command_line()
@@ -64,8 +64,7 @@ def main():
         settings['cookie_secret'] = config.get_option('cookie_secret')
         print(settings['cookie_secret'].hex())
 
-
-#    auth.install_admin()
+    auth.init()
 
     application = tornado.web.Application(
         routes,
