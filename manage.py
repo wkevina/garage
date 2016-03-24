@@ -1,3 +1,4 @@
+import os
 import argparse
 import getpass
 
@@ -33,6 +34,11 @@ def clear_users(args):
     else:
         print('Cancelled')
 
+def gen_key(args):
+    cookie_secret = os.urandom(32)
+    config.set_option('cookie_secret', cookie_secret)
+    print('Secret key created')
+
 
 if __name__ == '__main__':
     parent_parser = argparse.ArgumentParser()
@@ -42,6 +48,7 @@ if __name__ == '__main__':
         help='Commands'
     )
 
+    # USERS sub-commands
     users_parser = subparsers.add_parser('users')
 
     users_subparsers = users_parser.add_subparsers(
@@ -62,6 +69,10 @@ if __name__ == '__main__':
     # USERS REMOVE
     clear_parser = users_subparsers.add_parser('clearall')
     clear_parser.set_defaults(func=clear_users)
+
+    # KEYS subcommands
+    keys_parser = subparsers.add_parser('keys')
+    keys_parser.set_defaults(func=gen_key)
 
     args = parent_parser.parse_args()
     if hasattr(args, 'func'):

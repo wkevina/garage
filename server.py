@@ -1,8 +1,10 @@
 import os
+import sys
 
 import tornado.ioloop
 import tornado.web
 import tornado.httpserver
+from tornado.log import gen_log
 import tornado.options
 from tornado.options import define, options
 
@@ -14,8 +16,6 @@ import config
 
 define('server_port', default=8888, type=int)
 define('server_hostname', default='localhost', type=str)
-define('gen_key')
-
 
 class MainHandler(basehandler.BaseHandler):
     @tornado.web.authenticated
@@ -55,14 +55,13 @@ def main():
     tornado.options.parse_config_file(conf_path, final=False)
     tornado.options.parse_command_line()
 
-    if options.gen_key:
-        cookie_secret = os.urandom(32)
-        config.set_option('cookie_secret', cookie_secret)
-        settings['cookie_secret'] = cookie_secret
-        print(cookie_secret.hex())
-    else:
-        settings['cookie_secret'] = config.get_option('cookie_secret')
-        print(settings['cookie_secret'].hex())
+    key = config.get_option('cookie_secret')
+    if key is None:
+        gen_log.error('Fatal: secret key not found. '
+                          'Run `manage.py keys` to create it')
+        sys.exit()
+
+    settings['cookie_secret'] = key
 
     auth.init()
 
