@@ -8,6 +8,7 @@ import tornado.websocket
 import tornado.locks
 import tornado.concurrent
 from tornado.options import define, options
+from tornado.log import gen_log
 
 import basehandler
 import stamp
@@ -62,9 +63,11 @@ def task():
         frame = yield image_to_stream(cap)
         set_frame(frame)
 
-        assert frame is _current_frame
+        gen_log.info('Captured new frame')
 
         condition.notify_all()
+
+        gen_log.info('Notified websockets')
 
         yield nxt
 
@@ -76,8 +79,6 @@ class CaptureHandler(basehandler.BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-
-
         stream = current_frame()
 
         if stream is None:
@@ -160,6 +161,7 @@ class CaptureSocketHandler(tornado.websocket.WebSocketHandler):
             yield condition.wait()
             try:
                 self.write_message('New capture available')
+                gen_log.info('Notified client on websocket')
             except:
                 return
 
