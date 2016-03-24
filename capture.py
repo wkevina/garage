@@ -7,10 +7,13 @@ import tornado.web
 import tornado.websocket
 import tornado.locks
 import tornado.concurrent
+from tornado.options import define, options
 
 import basehandler
 import stamp
 import auth
+
+define("capture_interval", default=10, type=float)
 
 _current_frame = None
 
@@ -50,8 +53,7 @@ def set_frame(frame):
 def task():
     i = 1
     while True:
-        nxt = gen.sleep(2.5)
-        print('capture.task')
+        nxt = gen.sleep(options.capture_interval)
 
         cap = yield capture()
 
