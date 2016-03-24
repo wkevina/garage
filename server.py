@@ -46,7 +46,6 @@ routes = [
     ('/', MainHandler),
     ('/login', login.LoginHandler),
     ('/logout', login.LogoutHandler),
-
 ]
 
 def main():
