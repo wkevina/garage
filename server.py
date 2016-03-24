@@ -10,9 +10,11 @@ import basehandler
 import capture
 import auth
 import login
+import config
 
 define('server_port', default=8888, type=int)
 define('server_hostname', default='localhost', type=str)
+define('gen_key')
 
 
 class MainHandler(basehandler.BaseHandler):
@@ -25,15 +27,14 @@ def rel(path):
     os.path.join(os.path.dirname(__file__), path)
 )
 
-
 static_path = rel('assets')
 template_path = rel('templates')
 conf_path = rel('garage.conf')
+peristent_path = rel('storage.db')
 
 settings = dict(
     debug=True,
     autoreload=True,
-    cookie_secret=os.urandom(32),
     login_url='/login',
     static_path=static_path,
     template_path=template_path
@@ -49,8 +50,20 @@ routes = [
 ]
 
 def main():
+    config.init(peristent_path)
+
     tornado.options.parse_config_file(conf_path, final=False)
     tornado.options.parse_command_line()
+
+    if options.gen_key:
+        cookie_secret = os.urandom(32)
+        config.set_option('cookie_secret', cookie_secret)
+        settings['cookie_secret'] = cookie_secret
+        print(cookie_secret.hex())
+    else:
+        settings['cookie_secret'] = config.get_option('cookie_secret')
+        print(settings['cookie_secret'].hex())
+
 
 #    auth.install_admin()
 
