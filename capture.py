@@ -68,19 +68,28 @@ def task():
 
         yield nxt
 
+def nocache(handler):
+    handler.set_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+    handler.set_header('Expires', 0)
 
 class CaptureHandler(basehandler.BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        self.set_header('Content-Type', 'image/jpeg')
+
 
         stream = current_frame()
 
+        if stream is None:
+            # Report error and end response
+            self.set_status(503)
+            return
+
+        self.set_header('Content-Type', 'image/jpeg')
         self.set_header("Content-Length", len(stream.getbuffer()))
+        nocache(self)
 
         for chunk in self.chunk_content(stream):
-            print("Writing chunk")
             try:
                 self.write(chunk)
                 yield self.flush()
