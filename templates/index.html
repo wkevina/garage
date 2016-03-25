@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<script src="/static/emitter.js"></script>
+<script type="text/javascript" src="{{ static_url('emitter.js') }}"></script>
 {% end %}
 
 {% block login_control %}
@@ -34,5 +34,5 @@
 {% end %}
 
 {% block body_tail %}
-<script type="text/javascript" src="/static/refresh.js"></script>
+<script type="text/javascript" src="{{ static_url('refresh.js') }}"></script>
 {% end %}
