@@ -6,52 +6,34 @@
     <!-- <link href="{{ static_url('stack.css') }}" rel="stylesheet" type="text/css"/> -->
     <link href="{{ static_url('custom.css') }}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+    {% block head %}{% end %}
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
   </head>
   <body>
-      <header class="top-bar">
-          <div class="top-bar-title">
-              <strong>Garage Door Controller</strong>
-          </div>
-          <div>
-              <div class="top-bar-left"></div>
-              <nav class="top-bar-right">
-                  {% block login_control %}
-                  <ul class="menu">
-                      <li>
-                          <a href="/logout">
-                              <i class="fa fa-fw fa-power-off"></i> Logout
-                          </a>
-                      </li>
-                  </ul>
-                  {% end %}
-              </nav>
-          </div>
-      </header>
-
-      <main>
-          {% block content %}
-
-          <div class="row">
-              <div class="column" >
-                  <h3><i class="fa fa-cog"></i> Your Garage</h3>
-              </div>
-          </div>
-          <div class="row align-center">
-              <div class="column small-12 medium-6 text-right">
-                  <img id="capture" class="lifted" src="/capture/">
-              </div>
-              <div class="column medium-stack inline-flex align-center">
-            <button class="button round large success hollow">Door</button>
-            <button class="button round large warning hollow">Light</button>
-        </div>
+    <header class="top-bar">
+      <div class="top-bar-title">
+        <strong>Garage Door Controller</strong>
       </div>
+      <div>
+        <div class="top-bar-left"></div>
+        <nav class="top-bar-right">
+          {% block login_control %}
+          {% end %}
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      {% block content %}
+      <h1>Block content not implemented.</h1>
       {% end %}
     </main>
 
-    <script type="text/javascript" src="/static/refresh.js"></script>
+    {% block body_tail %}{% end %}
   </body>
 </html>

@@ -20,7 +20,7 @@ define('server_hostname', default='localhost', type=str)
 class MainHandler(basehandler.BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render('base.html')
+        self.render('index.html')
 
 def rel(path):
     return os.path.abspath(

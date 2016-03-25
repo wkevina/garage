@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
+{% end %}
+
+{% block login_control %}
+<ul class="menu">
+  <li>
+    <a href="/logout">
+      <i class="fa fa-fw fa-power-off"></i> Logout
+    </a>
+  </li>
+</ul>
+{% end %}
+
+{% block content %}
+
+<div class="row">
+  <div class="column" >
+    <h3><i class="fa fa-cog"></i> Your Garage</h3>
+  </div>
+</div>
+<div class="row align-center">
+  <div class="column small-12 medium-6 text-right">
+    <img id="capture" class="lifted" src="/capture/">
+  </div>
+  <div class="column medium-stack inline-flex align-center">
+    <button class="button round large success hollow">Door</button>
+    <button class="button round large warning hollow">Light</button>
+  </div>
+</div>
+
+{% end %}
+
+{% block body_tail %}
+<script type="text/javascript" src="/static/refresh.js"></script>
+{% end %}
