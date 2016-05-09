@@ -8,7 +8,7 @@ from tornado.log import gen_log
 import tornado.options
 from tornado.options import define, options
 
-from handlers import base, main, capture, login
+from handlers import main, capture, upload, login
 from services import auth, config
 
 define('server_port', default=8888, type=int)
@@ -33,8 +33,9 @@ settings = dict(
 )
 
 routes = [
-    (r"/capture/", capture.CaptureHandler),
-    (r"/socket", capture.CaptureSocketHandler),
+    ('/capture/', capture.CaptureHandler),
+    ('/upload', upload.UploadHandler),
+    ('/socket', capture.CaptureSocketHandler),
     ('/', main.MainHandler),
     ('/login', login.LoginHandler),
     ('/logout', login.LogoutHandler),
