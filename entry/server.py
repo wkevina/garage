@@ -8,11 +8,8 @@ from tornado.log import gen_log
 import tornado.options
 from tornado.options import define, options
 
-import basehandler
-import capture
-import auth
-import login
-import config
+from handlers import basehandler, capture, login
+from services import auth, config
 
 define('server_port', default=8888, type=int)
 define('server_hostname', default='localhost', type=str)
@@ -22,10 +19,10 @@ class MainHandler(basehandler.BaseHandler):
     def get(self):
         self.render('index.html')
 
+BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
 def rel(path):
-    return os.path.abspath(
-    os.path.join(os.path.dirname(__file__), path)
-)
+    return os.path.abspath(os.path.join(BASE, path))
 
 static_path = rel('assets')
 template_path = rel('templates')

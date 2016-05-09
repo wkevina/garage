@@ -10,9 +10,8 @@ import tornado.concurrent
 from tornado.options import define, options
 from tornado.log import gen_log
 
-import basehandler
-import stamp
-import auth
+from . import basehandler
+from services import stamp, auth
 
 define("capture_interval", default=10, type=float)
 

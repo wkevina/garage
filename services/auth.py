@@ -2,7 +2,7 @@ import hashlib
 import uuid
 import os
 
-import config
+from services import config
 
 HASH_ROUNDS = 1000
 

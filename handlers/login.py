@@ -1,6 +1,6 @@
 import tornado.web
 
-import auth
+from services import auth
 
 class LoginHandler(tornado.web.RequestHandler):
     def get(self):
