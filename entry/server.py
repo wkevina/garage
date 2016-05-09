@@ -8,7 +8,7 @@ from tornado.log import gen_log
 import tornado.options
 from tornado.options import define, options
 
-from handlers import basehandler, main, capture, login
+from handlers import base, main, capture, login
 from services import auth, config
 
 define('server_port', default=8888, type=int)

@@ -10,7 +10,7 @@ import tornado.concurrent
 from tornado.options import define, options
 from tornado.log import gen_log
 
-from . import basehandler
+from . import base
 from services import stamp, auth
 
 define("capture_interval", default=10, type=float)
@@ -74,7 +74,7 @@ def nocache(handler):
     handler.set_header('Cache-Control', 'no-cache, no-store, must-revalidate')
     handler.set_header('Expires', 0)
 
-class CaptureHandler(basehandler.BaseHandler):
+class CaptureHandler(base.BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self):

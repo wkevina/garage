@@ -1,8 +1,8 @@
 import tornado.web
 
-from . import basehandler
+from . import base
 
-class MainHandler(basehandler.BaseHandler):
+class MainHandler(base.BaseHandler):
     """Render index.html"""
     @tornado.web.authenticated
     def get(self):
