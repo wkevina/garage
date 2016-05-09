@@ -8,16 +8,11 @@ from tornado.log import gen_log
 import tornado.options
 from tornado.options import define, options
 
-from handlers import basehandler, capture, login
+from handlers import basehandler, main, capture, login
 from services import auth, config
 
 define('server_port', default=8888, type=int)
 define('server_hostname', default='localhost', type=str)
-
-class MainHandler(basehandler.BaseHandler):
-    @tornado.web.authenticated
-    def get(self):
-        self.render('index.html')
 
 BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -40,7 +35,7 @@ settings = dict(
 routes = [
     (r"/capture/", capture.CaptureHandler),
     (r"/socket", capture.CaptureSocketHandler),
-    ('/', MainHandler),
+    ('/', main.MainHandler),
     ('/login', login.LoginHandler),
     ('/logout', login.LogoutHandler),
 ]
