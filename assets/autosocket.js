@@ -16,7 +16,7 @@ export class AutoSocket {
 
     connect() {
         if (!this.socket) {
-            var socket = new WebSocket(this.getUri());
+            const socket = new WebSocket(this.getUri());
             this.socket = socket;
             this.socket.addEventListener('open', this.onOpen);
             this.socket.addEventListener('close', this.onClose);
@@ -37,9 +37,10 @@ export class AutoSocket {
     };
 
     getUri() {
-        var host = window.location.host,
-            protocol = this.getProtocol(),
-            uri = '';
+        const host = window.location.host,
+              protocol = this.getProtocol();
+
+        let uri = '';
 
         uri += protocol;
         uri += '//';
@@ -50,7 +51,7 @@ export class AutoSocket {
     };
 
     getProtocol() {
-        var protocol = window.location.protocol;
+        let protocol = window.location.protocol;
 
         if (protocol == 'http:') {
             return 'ws:';
