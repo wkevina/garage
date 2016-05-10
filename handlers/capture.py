@@ -1,84 +1,26 @@
-import datetime
-import io
-
-import PIL.Image
 import tornado.gen as gen
 import tornado.web
 import tornado.websocket
-import tornado.locks
-import tornado.concurrent
 from tornado.options import define, options
 from tornado.log import gen_log
 
 from . import base
-from services import stamp, auth
+from services import auth
 
-define("capture_interval", default=10, type=float)
-
-_current_frame = None
-
-condition = tornado.locks.Condition()
-
-@gen.coroutine
-def capture():
-    # Placeholder implementation
-    # Will call cam.capture eventually
-    frame = PIL.Image.new("RGB", (640, 480))
-
-    return frame
-
-@gen.coroutine
-def timestamp(img):
-    now = datetime.datetime.now()
-
-    stamp.stamp(img, (10, 10), str(now), size=20)
-
-    return img
-
-@gen.coroutine
-def image_to_stream(img, format="JPEG"):
-    stream = io.BytesIO()
-    img.save(stream, format=format)
-
-    return stream
-
-def current_frame():
-    return _current_frame
-
-def set_frame(frame):
-    global _current_frame
-    _current_frame = frame
-
-@gen.coroutine
-def task():
-    i = 1
-    while True:
-        nxt = gen.sleep(options.capture_interval)
-
-        cap = yield capture()
-
-        yield timestamp(cap)
-
-        frame = yield image_to_stream(cap)
-        set_frame(frame)
-
-        gen_log.info('Captured new frame')
-
-        condition.notify_all()
-
-        gen_log.info('Notified websockets')
-
-        yield nxt
 
 def nocache(handler):
     handler.set_header('Cache-Control', 'no-cache, no-store, must-revalidate')
     handler.set_header('Expires', 0)
 
+
 class CaptureHandler(base.BaseHandler):
+    def initialize(self, image_manager):
+        self.image_manager = image_manager
+
     @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        stream = current_frame()
+        stream = self.image_manager.frame
 
         if stream is None:
             # Report error and end response
@@ -86,7 +28,8 @@ class CaptureHandler(base.BaseHandler):
             return
 
         self.set_header('Content-Type', 'image/jpeg')
-        self.set_header("Content-Length", len(stream.getbuffer()))
+        self.set_header('Content-Length', len(stream.getbuffer()))
+
         nocache(self)
 
         for chunk in self.chunk_content(stream):
@@ -134,6 +77,9 @@ class CaptureHandler(base.BaseHandler):
 
 
 class CaptureSocketHandler(tornado.websocket.WebSocketHandler):
+    def initialize(self, image_manager):
+        self.image_manager = image_manager
+
     def get_current_user(self):
         user_id = self.get_secure_cookie("garage_user")
 
@@ -157,7 +103,7 @@ class CaptureSocketHandler(tornado.websocket.WebSocketHandler):
     @gen.coroutine
     def wait_on_capture(self):
         while True:
-            yield condition.wait()
+            yield self.image_manager.ready.wait()
             try:
                 self.write_message('New capture available')
                 gen_log.info('Notified client on websocket')

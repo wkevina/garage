@@ -9,7 +9,7 @@ import tornado.options
 from tornado.options import define, options
 
 from handlers import main, capture, upload, login
-from services import auth, config
+from services import auth, config, image
 
 define('server_port', default=8888, type=int)
 define('server_hostname', default='localhost', type=str)
@@ -32,10 +32,14 @@ settings = dict(
     template_path=template_path
 )
 
+# Shared image manager
+# Used to synchronize capturing of new frames with serving that data
+image_manager = image.ImageManager()
+
 routes = [
-    ('/capture/', capture.CaptureHandler),
-    ('/upload', upload.UploadHandler),
-    ('/socket', capture.CaptureSocketHandler),
+    ('/capture/', capture.CaptureHandler, dict(image_manager=image_manager)),
+    ('/upload', upload.UploadHandler, dict(image_manager=image_manager)),
+    ('/socket', capture.CaptureSocketHandler, dict(image_manager=image_manager)),
     ('/', main.MainHandler),
     ('/login', login.LoginHandler),
     ('/logout', login.LogoutHandler),
@@ -50,7 +54,7 @@ def main():
     key = config.get_option('cookie_secret')
     if key is None:
         gen_log.error('Fatal: secret key not found. '
-                          'Run `manage.py keys` to create it')
+                      'Run `manage.py keys` to create it')
         sys.exit()
 
     settings['cookie_secret'] = key
@@ -64,8 +68,6 @@ def main():
 
     server = tornado.httpserver.HTTPServer(application)
     server.listen(options.server_port)
-
-    tornado.ioloop.IOLoop.current().spawn_callback(capture.task)
 
     tornado.ioloop.IOLoop.instance().start()
 

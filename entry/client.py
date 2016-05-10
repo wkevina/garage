@@ -5,8 +5,8 @@ Main functions are to submit webcam images to server and respond
 to commands from server
 """
 
-import io
 import PIL.Image
+from datetime import datetime
 
 from urllib3 import filepost
 from urllib3.fields import RequestField
@@ -17,11 +17,17 @@ from tornado.log import gen_log
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.httputil import HTTPHeaders
 
-def image_to_stream(img, format="JPEG"):
-    stream = io.BytesIO()
-    img.save(stream, format=format)
+from services.stamp import stamp
+from services.image import image_to_stream
 
-    return stream
+define("capture_interval", default=10, type=float)
+
+def timestamp(img):
+    now = datetime.now()
+    stamp(img, (10, 10), str(now), size=20, fill='gray')
+
+    return img
+
 
 def multipart(name, data, content_type='image/jpeg'):
     """Encode data as multipart form
@@ -65,9 +71,13 @@ def post_data(url, name, data, content_type):
 @gen.coroutine
 def main():
 
+    frame = PIL.Image.open('assets/test.jpg').convert(mode='RGB')
+
     while True:
-        frame = PIL.Image.new("RGB", (20, 20))
-        stream = image_to_stream(frame)
+
+        stamped = timestamp(frame.copy())
+
+        stream = image_to_stream(stamped)
 
         try:
             response = yield post_data(
@@ -78,8 +88,6 @@ def main():
 
         except Exception as ex:
             gen_log.error(ex)
-        else:
-            print(response)
 
         yield gen.sleep(10)
 
