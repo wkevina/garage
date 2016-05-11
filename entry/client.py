@@ -37,9 +37,12 @@ def rel(path):
 conf_path = rel('client.conf')
 
 
+# Time stamp format
+format = '%Y-%M-%D %I:%M:%S %p'
+
 def timestamp(img):
-    now = datetime.now()
-    stamp(img, (10, 10), str(now), size=20, fill='gray')
+    now = datetime.now().strftime(format)
+    stamp(img, (10, 10), str(now), size=20, fill='red')
 
     return img
 
