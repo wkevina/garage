@@ -5,8 +5,10 @@ Main functions are to submit webcam images to server and respond
 to commands from server
 """
 
-import PIL.Image
+import os
 from datetime import datetime
+
+import PIL.Image
 
 from urllib3 import filepost
 from urllib3.fields import RequestField
@@ -16,11 +18,24 @@ from tornado.ioloop import IOLoop
 from tornado.log import gen_log
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.httputil import HTTPHeaders
+from tornado.options import define, options
 
 from services.stamp import stamp
 from services.image import image_to_stream
 
+
 define("capture_interval", default=10, type=float)
+
+
+BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+
+def rel(path):
+    return os.path.abspath(os.path.join(BASE, path))
+
+
+conf_path = rel('client.conf')
+
 
 def timestamp(img):
     now = datetime.now()
@@ -75,8 +90,10 @@ def main():
 
     while True:
 
-        stamped = timestamp(frame.copy())
+        # start timer
+        nxt = gen.sleep(options.capture_interval)
 
+        stamped = timestamp(frame.copy())
         stream = image_to_stream(stamped)
 
         try:
@@ -89,10 +106,11 @@ def main():
         except Exception as ex:
             gen_log.error(ex)
 
-        yield gen.sleep(10)
+        yield nxt
 
 
 if __name__ == '__main__':
+    options.parse_config_file(conf_path, final=False)
     options.parse_command_line()
 
     IOLoop.current().run_sync(main)
